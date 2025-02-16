@@ -14,7 +14,7 @@ def main():
     fa = grammar.toFiniteAutomaton()
     
     # Testing strings
-    test_strings = ["adbbdabbbadbbdabbbababababababababadba", "abadaaaabbbadaba", "adba", "adbbbababadaba", "abadba", "adbb"]
+    test_strings = ["ababadaaba", "abb", "abd", "ba", "dba"]
     print("\nTesting strings:")
     for test_str in test_strings:
         belongs = fa.stringBelongToLanguage(test_str)
