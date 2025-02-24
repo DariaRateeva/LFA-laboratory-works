@@ -70,3 +70,31 @@ class Grammar:
         )
 
         return fa
+
+    def classify_chomsky_hierarchy(self):
+        is_regular = True
+        is_context_free = True
+        is_context_sensitive = True
+
+        for lhs, rhs_list in self.P.items():
+            for rhs in rhs_list:
+                # Type 2 (Context-Free) Check
+                if len(lhs) > 1:
+                    is_context_free = False
+
+                # Type 1 (Context-Sensitive) Check
+                if len(lhs) > len(rhs):
+                    is_context_sensitive = False
+
+                # Type 3 (Regular) Check
+                if not (rhs.islower() or (rhs[:-1].islower() and rhs[-1].isupper())):
+                    is_regular = False
+
+        if is_regular:
+            return "Type 3 (Regular Grammar)"
+        elif is_context_free:
+            return "Type 2 (Context-Free Grammar)"
+        elif is_context_sensitive:
+            return "Type 1 (Context-Sensitive Grammar)"
+        else:
+            return "Type 0 (Unrestricted Grammar)"
