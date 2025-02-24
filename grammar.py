@@ -1,19 +1,10 @@
 # grammar.py
 import random
+from base import Grammar
 from finite_automaton import FiniteAutomaton
 
-class Grammar:
-    def __init__(self):
-        self.VN = {'S', 'A', 'C', 'D'}  # Non-terminals
-        self.VT = {'a', 'b', 'd'}       # Terminals
-        self.P = {                       # Production rules
-            'S': ['aA'],
-            'A': ['bS', 'dD'],
-            'D': ['bC', 'aD'],
-            'C': ['a', 'bA']
-        }
-        self.S = 'S'  # Start symbol
-
+  # Start symbol
+class ExtendedGrammar(Grammar):
     def generate_string(self):
         #Generates a valid string by replacing non-terminals until only terminals remain. 
         current = self.S  
