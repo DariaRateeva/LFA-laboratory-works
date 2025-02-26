@@ -371,17 +371,27 @@ This part transforms the FA into a regular grammar using to_regular_grammar. Sta
 ---
 # **Conclusion**
 
-In this laboratory work, I set out to implement a **Grammar** class and its equivalent **Finite Automaton** class to demonstrate the practical use of regular grammars and automata. By defining non-terminals, terminals, and production rules, I was able to generate valid strings that follow the structure of the grammar. The conversion of these rules into a finite automaton provided a systematic way to test any input string against the language and determine if it belongs. 
+This laboratory work focused on the study of determinism in finite automata, the transformation of a non-deterministic finite automaton (NDFA) into a deterministic finite automaton (DFA), and the equivalence between finite automata and regular grammars. The main tasks of this lab involved verifying whether a given finite automaton is deterministic, converting an NDFA to an equivalent DFA using the subset construction method, transforming a finite automaton into a regular grammar, and visualizing the results graphically.
 
-Below is a screenshot of the console output:
-![Screenshot of generated strings and test results](code_output.png)
+To achieve these objectives, the first step was to implement a method that checks whether a given finite automaton is deterministic. This was done by iterating through the transitions of the automaton and verifying that each state has exactly one transition per input symbol and no ε-transitions. If multiple transitions for the same input symbol were found, the automaton was classified as non-deterministic. Next, the subset construction method was used to convert the NDFA into an equivalent DFA. This involved creating new states in the DFA that represented sets of NDFA states, systematically computing transitions for these sets, and ensuring that all reachable states were included. The transformed DFA preserved the language of the original NDFA while eliminating non-determinism. Additionally, the implementation included a function that converted the DFA into a regular grammar by mapping DFA states to non-terminals and transitions to production rules, ensuring that the resulting grammar generated the same language as the DFA. Finally, the finite automaton was visualized using Graphviz to provide a clear representation of its states and transitions, confirming that the DFA structure was correctly generated.
 
-The screenshot displays a few generated strings, such as `adba`, `abadaba`, and `adabbdba`, alongside the results of testing several example strings. Notably, the string `ababadaaba` was accepted by the automaton because it adheres to the production rules, whereas strings like `abb` and `abd` were rejected. These results confirm that our finite automaton’s transitions are accurately derived from the grammar’s production rules. Ultimately, this work illustrates the strong correspondence between **regular grammars** and **finite automata**, showing that if a grammar can generate a certain string, the automaton constructed from that grammar will accept it—and reject any string that does not conform to the language.
+![Screenshot of code output](output_lab2_LFA.png)
+
+
+
+
+![Screenshot of graphical representation](Graph_lab2_LFA.png)
+
+The results of the implementation, as shown in the output, indicate that the original finite automaton was non-deterministic, as the check for determinism returned False. This confirms that at least one state had multiple transitions for the same input symbol. After applying the subset construction algorithm, the generated DFA consisted of three states: D0, D1, and D2, with well-defined transitions. The transition structure shows that D0 loops on a and transitions to D1 on b, D1 loops on a and moves to D2 on b, and D2, being a final state, loops on both a and b. The graphical representation of the DFA, generated using Graphviz, further confirms the correctness of the transformation:
+
+The textual output also verifies the correctness of the DFA conversion, displaying the set of DFA states, the alphabet, the start and final states, and the transitions. Additionally, the classification of the given grammar as Type 3 (Regular Grammar) is shown, followed by the successful transformation of the finite automaton into a corresponding regular grammar. The converted regular grammar consists of non-terminals {q1, q0, q2}, terminals {a, b}, and the start symbol q0, with production rules that correctly reflect the transitions of the DFA. The presence of an ε-production in q2 confirms that q2 is a final state, allowing the grammar to terminate appropriately. Below is the textual output displaying the DFA conversion and regular grammar transformation:
+
+Overall, this laboratory work successfully demonstrated the fundamental principles of determinism in finite automata, the process of converting an NDFA to an equivalent DFA, and the close relationship between finite automata and regular grammars. The use of the subset construction method ensured that the DFA maintained the same accepted language as the original NDFA while eliminating non-deterministic behavior. The transformation from finite automaton to regular grammar provided further validation of the equivalence between these models in formal language theory. The graphical visualization using Graphviz played a crucial role in verifying the correctness of the generated DFA. By analyzing both the textual output and the graphical representation, it is evident that all transformations were correctly implemented, reinforcing the theoretical foundations of finite automata and their role in formal language processing.
 
 ---
 
 ## **References**
-1. Article **"Introduction of Finite Automata"**, by GeeksforGeeks – [https://www.geeksforgeeks.org/introduction-of-finite-automata/](https://www.geeksforgeeks.org/introduction-of-finite-automata/)  
-2. Article **"Finite-state machine"**, by Wikipedia – [https://en.wikipedia.org/wiki/Finite-state_machine](https://en.wikipedia.org/wiki/Finite-state_machine)  
-3. Article **"Introduction to Grammar in Theory of Computation"**, by GeeksforGeeks – [https://www.geeksforgeeks.org/introduction-to-grammar-in-theory-of-computation/](https://www.geeksforgeeks.org/introduction-to-grammar-in-theory-of-computation/)
+1. Article **"Difference between DFA and NFA"**, by GeeksforGeeks – [https://www.geeksforgeeks.org/difference-between-dfa-and-nfa/](https://www.geeksforgeeks.org/difference-between-dfa-and-nfa/)  
+2. Article **"Conversion from NFA to DFA"**, by GeeksforGeeks – [https://www.geeksforgeeks.org/conversion-from-nfa-to-dfa/](https://www.geeksforgeeks.org/conversion-from-nfa-to-dfa/)  
+3. Graphviz documentation  – [https://graphviz.readthedocs.io/en/stable/manual.html](https://graphviz.readthedocs.io/en/stable/manual.html)
 
