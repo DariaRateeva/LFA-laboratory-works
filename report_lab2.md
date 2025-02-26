@@ -140,7 +140,7 @@ This code defines a Grammar class to represent a formal grammar. The constructor
 It provides the basic structure for working with grammars in formal language theory.
 ---
 
-### **1.2 ExtendedGrammar Class: `generate_string` Method Explanation**
+### **1.2 ExtendedGrammar Class: `classify_chomsky_hierarchy` Method Explanation**
 The `classify_chomsky_hierarchy` method determines where the grammar fits in the Chomsky hierarchy, a framework classifying grammars into four types based on their production rules. It checks each rule against criteria for regular (Type 3), context-free (Type 2), and context-sensitive (Type 1) grammars, defaulting to unrestricted (Type 0) if none apply. The method uses flags to track compliance and returns the most restrictive type the grammar satisfies.
 
 ```python
