@@ -71,8 +71,6 @@ class FiniteAutomaton:
 
     def convert_ndfa_to_dfa(self):
         """ Converts an NDFA to a DFA using the subset construction method. """
-        from copy import deepcopy
-
         #dfa_states = {}  # Maps DFA state sets to names
         queue = [frozenset([self.q0])]  # Start DFA state as a set
         dfa_start = queue[0]  # DFA start state
