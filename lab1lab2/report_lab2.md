@@ -375,12 +375,12 @@ This laboratory work focused on the study of determinism in finite automata, the
 
 To achieve these objectives, the first step was to implement a method that checks whether a given finite automaton is deterministic. This was done by iterating through the transitions of the automaton and verifying that each state has exactly one transition per input symbol and no ε-transitions. If multiple transitions for the same input symbol were found, the automaton was classified as non-deterministic. Next, the subset construction method was used to convert the NDFA into an equivalent DFA. This involved creating new states in the DFA that represented sets of NDFA states, systematically computing transitions for these sets, and ensuring that all reachable states were included. The transformed DFA preserved the language of the original NDFA while eliminating non-determinism. Additionally, the implementation included a function that converted the DFA into a regular grammar by mapping DFA states to non-terminals and transitions to production rules, ensuring that the resulting grammar generated the same language as the DFA. Finally, the finite automaton was visualized using Graphviz to provide a clear representation of its states and transitions, confirming that the DFA structure was correctly generated.
 
-![Screenshot of code output](output_lab2_LFA.png)
+![Screenshot of code output](../output_lab2_LFA.png)
 
 
 
 
-![Screenshot of graphical representation](Graph_lab2_LFA.png)
+![Screenshot of graphical representation](../Graph_lab2_LFA.png)
 
 The results of the implementation, as shown in the output, indicate that the original finite automaton was non-deterministic, as the check for determinism returned False. This confirms that at least one state had multiple transitions for the same input symbol. After applying the subset construction algorithm, the generated DFA consisted of three states: D0, D1, and D2, with well-defined transitions. The transition structure shows that D0 loops on a and transitions to D1 on b, D1 loops on a and moves to D2 on b, and D2, being a final state, loops on both a and b. The graphical representation of the DFA, generated using Graphviz, further confirms the correctness of the transformation:
 

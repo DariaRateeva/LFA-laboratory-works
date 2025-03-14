@@ -240,7 +240,7 @@ The `main` function first instantiates the `Grammar` class and generates five ra
 In this laboratory work, I set out to implement a **Grammar** class and its equivalent **Finite Automaton** class to demonstrate the practical use of regular grammars and automata. By defining non-terminals, terminals, and production rules, I was able to generate valid strings that follow the structure of the grammar. The conversion of these rules into a finite automaton provided a systematic way to test any input string against the language and determine if it belongs. 
 
 Below is a screenshot of the console output:
-![Screenshot of generated strings and test results](code_output.png)
+![Screenshot of generated strings and test results](../code_output.png)
 
 The screenshot displays a few generated strings, such as `adba`, `abadaba`, and `adabbdba`, alongside the results of testing several example strings. Notably, the string `ababadaaba` was accepted by the automaton because it adheres to the production rules, whereas strings like `abb` and `abd` were rejected. These results confirm that our finite automaton’s transitions are accurately derived from the grammar’s production rules. Ultimately, this work illustrates the strong correspondence between **regular grammars** and **finite automata**, showing that if a grammar can generate a certain string, the automaton constructed from that grammar will accept it—and reject any string that does not conform to the language.
 
