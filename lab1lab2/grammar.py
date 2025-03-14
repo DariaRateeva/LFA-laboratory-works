@@ -1,7 +1,7 @@
 # grammar.py
 import random
-from base import Grammar
-from finite_automaton import FiniteAutomaton
+from lab1lab2.base import Grammar
+from lab1lab2.finite_automaton import FiniteAutomaton
 
   # Start symbol
 class ExtendedGrammar(Grammar):

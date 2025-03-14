@@ -1,4 +1,4 @@
-from base import Grammar
+from lab1lab2.base import Grammar
 import graphviz
 class FiniteAutomaton:
     def __init__(self, states, alphabet, transitions, start_state, final_states):

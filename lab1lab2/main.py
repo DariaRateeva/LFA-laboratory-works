@@ -1,5 +1,5 @@
-from grammar import ExtendedGrammar
-from finite_automaton import FiniteAutomaton
+from lab1lab2.grammar import ExtendedGrammar
+from lab1lab2.finite_automaton import FiniteAutomaton
 
 def main():
     # Define Grammar
