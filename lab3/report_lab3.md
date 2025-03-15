@@ -428,9 +428,9 @@ This final part classifies the extracted identifier:
 - If the identifier is not recognized, it is classified as an `INVALID` token.
 This ensures that:
 
-`"sin"` → `Token(SIN, "sin")`
-`"PI"` → `Token(PI, 3.14159)`
-`"unknown"` → `Token(INVALID, "unknown")`
+- `"sin"` → `Token(SIN, "sin")`
+- `"PI"` → `Token(PI, 3.14159)`
+- `"unknown"` → `Token(INVALID, "unknown")`
 The identifier method ensures that functions and constants are correctly identified while preventing invalid identifiers from being processed as valid tokens.
 ---
 
