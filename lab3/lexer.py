@@ -1,6 +1,3 @@
-# lexer.py
-
-import re
 from tokens import TokenType, Token
 
 class Lexer:
@@ -69,11 +66,10 @@ class Lexer:
                 self.advance()
                 return Token(TokenType.RPAREN, ')')
 
-            # If we get here, it's an invalid character
             self.advance()
             return Token(TokenType.INVALID, char)
 
-        return Token(TokenType.EOF, None)  # End of input
+        return Token(TokenType.EOF, None)
 
     def number(self):
         """Recognizes integers and floating-point numbers."""

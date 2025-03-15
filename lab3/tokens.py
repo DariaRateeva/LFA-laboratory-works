@@ -1,5 +1,3 @@
-# tokens.py
-
 class TokenType:
     INTEGER = "INTEGER"
     FLOAT = "FLOAT"

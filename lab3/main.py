@@ -1,5 +1,3 @@
-# main.py
-
 from lexer import Lexer
 
 def test_lexer(input_text):
