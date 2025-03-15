@@ -9,17 +9,17 @@ class Lexer:
         self.pos = 0
 
     def advance(self):
-        """Move the cursor to the next character."""
+        """Move to the next character."""
         self.pos += 1
 
     def peek(self):
-        """Look at the next character without moving the cursor."""
+        """Look at the next character without moving forward."""
         if self.pos + 1 < len(self.text):
             return self.text[self.pos + 1]
         return None
 
     def get_next_token(self):
-        """Lexical analysis: Tokenize the input string."""
+        """Tokenize the input string."""
         while self.pos < len(self.text):
             char = self.text[self.pos]
 
@@ -30,7 +30,7 @@ class Lexer:
             if char.isdigit() or char == '.':  # Handle numbers
                 return self.number()
 
-            if char.isalpha():  # Handle function names & constants
+            if char.isalpha():  # Handle functions & constants
                 return self.identifier()
 
             if char == '+':
@@ -56,6 +56,10 @@ class Lexer:
             if char == '^':
                 self.advance()
                 return Token(TokenType.EXPONENT, '^')
+
+            if char == '!':
+                self.advance()
+                return Token(TokenType.FACTORIAL, '!')
 
             if char == '(':
                 self.advance()
@@ -90,7 +94,7 @@ class Lexer:
             return Token(TokenType.INTEGER, int(num_str))
 
     def identifier(self):
-        """Recognizes function names and constants like pi, e, sin, cos, tan, etc."""
+        """Recognizes function names and constants."""
         ident = ""
         while self.pos < len(self.text) and self.text[self.pos].isalpha():
             ident += self.text[self.pos]
@@ -98,25 +102,25 @@ class Lexer:
 
         ident_lower = ident.lower()
 
-        # Match mathematical functions
-        if ident_lower == "sin":
-            return Token(TokenType.SIN, "sin")
-        elif ident_lower == "cos":
-            return Token(TokenType.COS, "cos")
-        elif ident_lower == "tan":
-            return Token(TokenType.TAN, "tan")
-        elif ident_lower == "log":
-            return Token(TokenType.LOG, "log")
-        elif ident_lower == "sqrt":
-            return Token(TokenType.SQRT, "sqrt")
-        elif ident_lower == "exp":
-            return Token(TokenType.EXP, "exp")
+        function_map = {
+            "sin": TokenType.SIN,
+            "cos": TokenType.COS,
+            "tan": TokenType.TAN,
+            "log": TokenType.LOG,
+            "sqrt": TokenType.SQRT,
+            "exp": TokenType.EXP,
+            "abs": TokenType.ABS,
+            "pow": TokenType.POW,
+        }
 
-        # Match mathematical constants
-        elif ident_lower == "pi":
-            return Token(TokenType.PI, 3.14159)
-        elif ident_lower == "e":
-            return Token(TokenType.E, 2.71828)
+        constant_map = {
+            "pi": (TokenType.PI, 3.14159),
+            "e": (TokenType.E, 2.71828),
+        }
 
+        if ident_lower in function_map:
+            return Token(function_map[ident_lower], ident_lower)
+        elif ident_lower in constant_map:
+            return Token(constant_map[ident_lower][0], constant_map[ident_lower][1])
         else:
             return Token(TokenType.INVALID, ident)
