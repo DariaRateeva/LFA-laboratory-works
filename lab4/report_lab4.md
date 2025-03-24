@@ -101,100 +101,105 @@ The program systematically iterates through all possible valid symbol combinatio
 The following sections describe the core logic and implementation details of each part of the program.
 
 
-### **1. generate_combinations_for_line method explanation**
+### **1. parse_regex method explanation**
 ```python
-def generate_combinations_for_line(pattern_part):
-    combinations = [""]
+tokens = []
+    i = 0
+    while i < len(expression):
+        char = expression[i]
 
-    if pattern_part == "(S|T)(U|V)W*Y+24":
-        st_choices = ["S", "T"]
-        uv_choices = ["U", "V"]
-        w_repeats = ["W" * i for i in range(6)]
-        y_repeats = ["Y" * i for i in range(1, 6)]
+        if char == "(":
+            end = i + 1
+            depth = 1
+            while end < len(expression) and depth > 0:
+                if expression[end] == "(":
+                    depth += 1
+                elif expression[end] == ")":
+                    depth -= 1
+                end += 1
+            group_content = expression[i + 1:end - 1]
+            options = group_content.split("|")
+            token = ('choice', options)
+            i = end
 
-        new_combinations = []
-        for st, uv, w, y in itertools.product(st_choices, uv_choices, w_repeats, y_repeats):
-            new_combinations.append(st + uv + w + y + "24")
-        return new_combinations
 ```
 **Explanation**:  
-This pattern consists of:
-- `(S|T)`: A choice between "S" and "T".
-- `(U|V)`: A choice between "U" and "V".
-- `W*`: Zero or more occurrences of "W".
-- `Y+`: At least one occurrence of "Y".
-- `"24"`: A fixed literal at the end.
+This part of the code checks if the current character is an opening bracket (, which means a group with options like (A|B) is starting.
+It then finds the matching closing bracket ) and extracts the content between them, like A|B.
+It splits that content by | to get the list of options (e.g. ['A', 'B']), and stores it as a token: ('choice', ['A', 'B']).
+Finally, it adds that token to the list and moves to the next part of the expression.
 
-The function:
-1. Defines possible choices for `"S"` or `"T"` and `"U"` or `"V"`.
-2. Creates a list of `"W"` repeated **0 to 5 times** (to limit infinite repetition).
-3. Creates a list of `"Y"` repeated **1 to 5 times** (since `Y+` requires at least one occurrence).
-4. Uses `itertools.product()` to generate all valid combinations.
-5. Appends `"24"` as a literal to each combination.
 
 
 ```python
-    elif pattern_part == "L(M|N)O^3P*Q(2|3)":
-        mn_choices = ["M", "N"]
-        o_part = "OOO"
-        p_repeats = ["P" * i for i in range(6)]
-        num_choices = ["2", "3"]
+        elif char in SUPERSCRIPT_MAP:
+            prev = tokens.pop()
+            count = SUPERSCRIPT_MAP[char]
+            token = ('repeat', prev, count, count)
+            i += 1
 
-        new_combinations = []
-        for mn, p, num in itertools.product(mn_choices, p_repeats, num_choices):
-            new_combinations.append("L" + mn + o_part + p + "Q" + num)
-        return new_combinations
+        elif char == '*':
+            prev = tokens.pop()
+            token = ('repeat', prev, 0, MAX_REPEAT)
+            i += 1
 ```
 
+This part handles repetition symbols in the regex:
 
-This pattern consists of:
-- `"L"`: A fixed literal at the beginning.
-- `(M|N)`: A choice between "M" and "N".
-- `O^3`: Exactly three occurrences of `"O"`.
-- `P*`: Zero or more occurrences of "P".
-- `"Q"`: A fixed literal.
-- `(2|3)`: A choice between `"2"` and `"3"` at the end.
-
-The function:
-1. Defines choices for `"M"` or `"N"`.
-2. Defines `"OOO"` explicitly, as `O^3` always requires exactly three occurrences.
-3. Creates a list of `"P"` repeated **0 to 5 times** (to limit `P*`).
-4. Defines the last character choice as `"2"` or `"3"`.
-5. Uses `itertools.product()` to generate all valid combinations.
+- If the character is a superscript like ² or ³, it looks up how many times to repeat (e.g. ² means 2 times). It takes the previous token, wraps it in a ('repeat', token, count, count) structure, and adds it back.
+- If the character is *, it means "repeat 0 to 5 times" (based on the defined MAX_REPEAT). It also pops the previous token and wraps it as a repeat with a random count between 0 and 5.
+These tokens are then used later to generate the repeated characters.
 
 ```python
-    elif pattern_part == "R*S(T|U|V)W(X|Y|Z)^2":
-        r_repeats = ["R" * i for i in range(6)]
-        tuv_choices = ["T", "U", "V"]
-        xyz_choices = ["XX", "YY", "ZZ"]
+            elif char == '+':
+            prev = tokens.pop()
+            token = ('repeat', prev, 1, MAX_REPEAT)
+            i += 1
 
-        new_combinations = []
-        for r, tuv, xyz in itertools.product(r_repeats, tuv_choices, xyz_choices):
-            new_combinations.append(r + "S" + tuv + "W" + xyz)
-        return new_combinations
+        elif char.isspace():
+            i += 1
+            continue
 
-    return combinations
+        else:
+            token = ('literal', char)
+            i += 1
+
+        tokens.append(token)
+    return tokens
 ```
-This pattern consists of:
-- `R*`: Zero or more occurrences of `"R"`.
-- `"S"`: A fixed literal.
-- `(T|U|V)`: A choice between "T", "U", and "V".
-- `"W"`: A fixed literal.
-- `(X|Y|Z)^2`: Exactly **two** occurrences of either "X", "Y", or "Z".
-
-The function:
-1. Creates a list of `"R"` repeated **0 to 5 times** (to limit `R*`).
-2. Defines choices for `"T"`, `"U"`, or `"V"`.
-3. Defines `"XX"`, `"YY"`, and `"ZZ"` explicitly, as `(X|Y|Z)^2` must be **exactly two characters**.
-4. Uses `itertools.product()` to generate all valid combinations.
-
-
-- The function returns a list of **all valid strings** that match the given pattern.
-- If the pattern does not match any predefined expressions, it returns an empty string by default.
+- If the character is +, it means "repeat 1 to 5 times".
+- It takes the previous token and wraps it in a repeat token with range 1 to MAX_REPEAT.
+- If the character is a space, it just skips it and continues.
+Otherwise, it treats the character as a normal literal and creates a ('literal', char) token.
+All created tokens are added to the tokens list, which will be used later to generate the final string.
 
 ---
 
-### **2. show_processing_sequence method explanation**
+### **2.generate_from_token method explanation**
+
+```python
+def generate_from_token(token):
+    if token[0] == 'literal':
+        return token[1]
+    elif token[0] == 'choice':
+        return random.choice(token[1])
+    elif token[0] == 'repeat':
+        _, inner_token, min_r, max_r = token
+        repeat_count = random.randint(min_r, max_r)
+        return ''.join(generate_from_token(inner_token) for _ in range(repeat_count))
+
+```
+This function takes a token and generates a string based on its type:
+
+- If it's a 'literal', it just returns the character.
+- If it's a 'choice', it randomly picks one option from the list.
+- If it's a 'repeat', it picks a random number between min_r and max_r and repeats the inner token that many times.
+It works recursively, so if the inner token is also a repeat or choice, it keeps going deeper until it builds the full string.
+
+
+---
+
+### **3. show_processing_sequence method explanation**
 ```python
 def show_processing_sequence(pattern_part, combination):
     print(f"\nProcessing sequence for combination '{combination}' in pattern '{pattern_part}':")
@@ -437,72 +442,35 @@ This part of the function processes the final components of the **`R*S(T|U|V)W(X
 
 --- 
 
-### **3. main explanation**
+### **4. main explanation**
 
 ```python
-# Generate combinations for each line
-line1 = "(S|T)(U|V)W*Y+24"
-line2 = "L(M|N)O^3P*Q(2|3)"
-line3 = "R*S(T|U|V)W(X|Y|Z)^2"
-
-combinations1 = generate_combinations_for_line(line1)
-combinations2 = generate_combinations_for_line(line2)
-combinations3 = generate_combinations_for_line(line3)
-
-lines_and_combinations = [
-    (line1, combinations1),
-    (line2, combinations2),
-    (line3, combinations3)
+for pattern, breakdown_pattern in regex_pairs:
+    print(f"\n--- Generating for: {pattern} ---")
+    for i in range(3):
+        combo = generate_string(pattern)
+        print(f"{i + 1}. Generated: {combo}")
+    # Use one example for breakdown
+    example = generate_string(pattern).upper()  # convert to uppercase for matching breakdown logic
+    show_processing_sequence(breakdown_pattern, example)
 ]
 ```
 
 **Explanation**:  
-This part of the function generates valid string combinations for each predefined **regular expression pattern** by calling the `generate_combinations_for_line()` function.
+This loop goes through each regex pattern:
 
-- **Defining Regular Expressions**:  
-  - `line1`: `(S|T)(U|V)W*Y+24`  
-  - `line2`: `L(M|N)O^3P*Q(2|3)`  
-  - `line3`: `R*S(T|U|V)W(X|Y|Z)^2`  
-  These define the rules for constructing valid string sequences.
-
-- **Generating Valid Combinations**:  
-  - Calls `generate_combinations_for_line(line1)`, `line2`, and `line3` to produce lists of all valid strings conforming to the respective patterns.
-
-- **Storing Results**:  
-  - The three `(pattern, combinations)` pairs are stored in the `lines_and_combinations` list for easy access and iteration.
+- It prints the current pattern.
+- Then it generates 3 random strings that match the pattern using generate_string() and prints them.
+- After that, it generates one more string (converted to uppercase) and calls show_processing_sequence() to explain step-by-step how that string was built based on the pattern structure.
+- The .upper() is used to match the format used in the breakdown logic.
 
 
 
-```python
-for line, combinations in lines_and_combinations:
-    print(f"Examples for Line: {line}")
-    random_combinations = random.sample(combinations, 5)
-    for i, combo in enumerate(random_combinations):
-        print(f"{i + 1}. {combo}")
-    show_processing_sequence(line, random_combinations[0])
-    print()
-```
-
-**Explanation**:  
-This part of the code iterates through the generated string combinations for each **regular expression pattern**, prints sample outputs, and processes one example step by step.
-
-- **Loop Through Patterns and Combinations**:  
-  - Iterates over `lines_and_combinations`, where each entry consists of a pattern (`line`) and its corresponding valid combinations (`combinations`).
-
-- **Print Pattern Header**:  
-  - Displays the regular expression being processed (`line`).
-
-- **Select and Print Random Samples**:  
-  - Uses `random.sample(combinations, 5)` to select **five random valid strings** from the generated combinations.
-  - Iterates through these selections and prints them with an index.
-
-- **Process One Example**:  
-  - Calls `show_processing_sequence(line, random_combinations[0])` to break down the **first random sample** step by step.
 
 
 ---
 # **Conclusion**
-## **Conclusion**
+
 
 In this laboratory work, I explored the concept of **regular expressions**, their structure, and their application in **pattern matching and string generation**. The implementation involved generating valid strings based on **three different regular expressions** and analyzing their processing steps. Through this process, I gained a deeper understanding of how regular expressions are used to define patterns and how different operators, such as concatenation, alternation, and quantifiers, affect string formation.
 
