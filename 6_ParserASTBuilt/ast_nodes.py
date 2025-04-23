@@ -22,17 +22,17 @@ class FunctionNode(ASTNode):
         self.func_token = func_token
         self.argument = argument
 
-
-def print_ast(node, indent=""):
-    if isinstance(node, NumberNode):
-        print(indent + f"Number({node.value})")
-    elif isinstance(node, UnaryOpNode):
-        print(indent + f"Unary({node.op_token.type})")
-        print_ast(node.operand, indent + "  ")
-    elif isinstance(node, BinaryOpNode):
-        print(indent + f"Operation({node.op_token.type})")
-        print_ast(node.left, indent + "  ")
-        print_ast(node.right, indent + "  ")
-    elif isinstance(node, FunctionNode):
-        print(indent + f"Function({node.func_token.type})")
-        print_ast(node.argument, indent + "  ")
+#
+# def print_ast(node, indent=""):
+#     if isinstance(node, NumberNode):
+#         print(indent + f"Number({node.value})")
+#     elif isinstance(node, UnaryOpNode):
+#         print(indent + f"Unary({node.op_token.type})")
+#         print_ast(node.operand, indent + "  ")
+#     elif isinstance(node, BinaryOpNode):
+#         print(indent + f"Operation({node.op_token.type})")
+#         print_ast(node.left, indent + "  ")
+#         print_ast(node.right, indent + "  ")
+#     elif isinstance(node, FunctionNode):
+#         print(indent + f"Function({node.func_token.type})")
+#         print_ast(node.argument, indent + "  ")
